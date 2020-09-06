@@ -17,17 +17,41 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException.NotAcceptable;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.oak.challenge.exception.InputNotFoudException;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Custom {@link ResponseEntityExceptionHandler}
+ * 
+ * @author anderson
+ *
+ */
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
+	
+	/**
+	 * Catch the {@link  InputNotFoudException}
+	 * 
+	 * @return {@link NotAcceptable} http status
+	 */
+	@ExceptionHandler(InputNotFoudException.class)
+	public ResponseEntity<Object> exception(InputNotFoudException ex, WebRequest request) {
+		String[] arr = new String[]{String.valueOf(ex.getId()), ex.getWhichDiff().toString()};
+		String userMessage = messageSource.getMessage("input.not-found", arr,
+				LocaleContextHolder.getLocale());
+		return handleExceptionInternal(ex, new Error(userMessage), new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE, request);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
@@ -42,7 +66,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		List<Error> errors = listErrors(ex.getBindingResult());
+		List<Error> errors = listBindResultErrors(ex.getBindingResult());
 		return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
 	}
 
@@ -57,7 +81,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, new Error(userMessage, devMessage), headers, status, request);
 	}
 
-	private List<Error> listErrors(BindingResult bindingResult) {
+	private List<Error> listBindResultErrors(BindingResult bindingResult) {
 		List<Error> errors = new ArrayList<>();
 
 		for (FieldError fieldError : bindingResult.getFieldErrors()) {
@@ -69,6 +93,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return errors;
 	}
 
+	/**
+	 * provides a user "friendly" error
+	 * 
+	 * @author anderson
+	 *
+	 */
+	@AllArgsConstructor
 	static class Error {
 
 		@Getter
@@ -76,9 +107,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		@Getter
 		private String devMessage;
 
-		public Error(String userMessage, String devMessage) {
-			this.userMessage = userMessage;
-			this.devMessage = devMessage;
+		public Error(String userMessage) {
 		}
 
 	}

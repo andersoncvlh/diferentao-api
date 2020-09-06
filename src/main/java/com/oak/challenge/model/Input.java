@@ -3,24 +3,34 @@ package com.oak.challenge.model;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
+/**
+ * Represents the data that clients request to compare.
+ * 
+ * @author anderson
+ *
+ */
 @Getter @Setter 
 @NoArgsConstructor @AllArgsConstructor
-@ToString @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Input implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	@EqualsAndHashCode.Include
+	/**
+     * Number used to identify pairs of data to compare.
+     */
+	@NotNull
 	private Integer id;
 	
+	/**
+     * The value in base64 encoding that will be compared.
+     */
 	@NotBlank
 	private String value;
 	

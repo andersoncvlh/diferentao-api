@@ -4,9 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.oak.challenge.exception.InputNotFoudException;
@@ -18,22 +15,40 @@ import com.oak.challenge.model.dictionary.WhichDiff;
 import com.oak.challenge.repository.InputDiffRepository;
 import com.oak.challenge.repository.MapInputDiffRepository;
 
+/**
+ * Provides business logic
+ * 
+ * @author anderson
+ *
+ */
 @Service
 public class DiffBusiness {
 
-	@Autowired
-	private MessageSource messageSource;
-	
-	public void leftDiff(Integer id, Input input) {
-		input.setId(id);
+	/**
+	 * insert the information from the left 
+	 * 
+	 * @param input
+	 */
+	public void leftDiff(Input input) {
 		getRepositoryInstance().putLeft(input);
 	}
 	
-	public void rigthDiff(Integer id, Input input) {
-		input.setId(id);
+	/**
+	 * insert the information from the right
+	 * 
+	 * @param input
+	 */
+	public void rigthDiff(Input input) {
 		getRepositoryInstance().putRight(input);
 	}
 
+	/**
+	 * Compares and provides the result 
+	 * 
+	 * @param id Identifier of the data to be compared
+	 * @return {@link Output}
+	 * @throws InputNotFoudException If the data for the given identifier is not found
+	 */
 	public Output comparisonResult(Integer id) throws InputNotFoudException {
 		Output output = null;
 		
@@ -50,7 +65,7 @@ public class DiffBusiness {
         } else if (left.getValue().length() != rigth.getValue().length()) {
         	output.setResult(StatusDiff.DIFF_SIZE);
         } else {
-        	output.setResult(StatusDiff.SAME_SIZE_DIFF);
+        	output.setResult(StatusDiff.DIFF_CONTENT);
         	
         	
         	List<Diff> diffList = new LinkedList<>();
@@ -77,14 +92,23 @@ public class DiffBusiness {
 		return output;
 	}
 	
+	/**
+	 * Check if there is data for informed id
+	 * 
+	 * @param id
+	 * @param input
+	 * @param whichDiff
+	 * @throws InputNotFoudException
+	 */
 	private void inputValidate(Integer id, Input input, WhichDiff whichDiff) throws InputNotFoudException {
 		if (Objects.isNull(input)) {
-			String[] arr = new String[]{String.valueOf(id)};
-			throw new InputNotFoudException(messageSource.getMessage("resource.not-found.id", arr,
-					LocaleContextHolder.getLocale()), id, whichDiff);
+			throw new InputNotFoudException("Input not found", id, whichDiff);
 		}
 	}
 	
+	/**
+	 * @return Singleton instance
+	 */
 	private InputDiffRepository getRepositoryInstance() {
 		return MapInputDiffRepository.getInstance();
 	}

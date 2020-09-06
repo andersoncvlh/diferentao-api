@@ -4,7 +4,13 @@ import com.oak.challenge.model.dictionary.WhichDiff;
 
 import lombok.Getter;
 
-public class InputNotFoudException extends Exception { 
+/**
+ * This exception is thrown when the entered identifier is not valid
+ * 
+ * @author anderson
+ *
+ */
+public class InputNotFoudException extends RuntimeException { 
     
 	private static final long serialVersionUID = 1L;
 	
@@ -19,16 +25,5 @@ public class InputNotFoudException extends Exception {
         this.whichDiff = whichDiff;
     }
 	
-	public InputNotFoudException(Throwable e, Integer id, WhichDiff whichDiff) {
-        super(e);
-        this.id = id;
-        this.whichDiff = whichDiff;
-    }
-	
-	public InputNotFoudException(String errorMessage, Throwable throwable, Integer id, WhichDiff whichDiff) {
-        super(errorMessage, throwable);
-        this.id = id;
-        this.whichDiff = whichDiff;
-    }
 
 }
