@@ -28,7 +28,7 @@ public class DiffControllerTest extends AbstractTesteIntegracao {
 	
 	@Test @Order(1)
 	public void shouldNotAccetableGetMethod() throws Exception {
-		Integer id = 1 ;
+		Integer id = 20 ;
 		mockMvc.perform(get(String.format("/v1/diff/%d", id))
     			.contentType(MediaType.APPLICATION_JSON))
 		.andDo(print())
