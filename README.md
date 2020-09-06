@@ -40,13 +40,16 @@ It provides some methods to test:
 - Unit Tests
 `mvn -Dtest=DiffBusinessTest test`
 
-Sending data to LEFT endpoint
+Sending data to LEFT endpoint:
+
 `curl -i -H "Content-Type: application/json" -X POST -d '{"id": 1, "value":"YWMvZGM="}' http://localhost:9180/diferentao-api/v1/diff/left`
 
-Sending data to RIGHT endpoint
+Sending data to RIGHT endpoint:
+
 `curl -i -H "Content-Type: application/json" -X POST -d '{"id": 1, "value":"YWMvZGM="}' http://localhost:9180/diferentao-api/v1/diff/right`
 
-Getting the diff result
+Getting the diff result:
+
 `curl -X GET -i http://localhost:9180/diferentao-api/v1/diff/1`
 
 ### Run
