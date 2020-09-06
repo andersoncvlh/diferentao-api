@@ -24,7 +24,7 @@ import com.oak.challenge.model.dictionary.StatusDiff;
  *
  */
 @TestMethodOrder(OrderAnnotation.class)
-public class IntegrationTest extends AbstractTesteIntegracao {
+public class DiffControllerTest extends AbstractTesteIntegracao {
 	
 	@Test @Order(1)
 	public void shouldNotAccetableGetMethod() throws Exception {

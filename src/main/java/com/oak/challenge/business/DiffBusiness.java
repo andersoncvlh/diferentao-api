@@ -52,9 +52,9 @@ public class DiffBusiness {
 	public Output comparisonResult(Integer id) throws InputNotFoudException {
 		Output output = null;
 		
-		Input left = getRepositoryInstance().getLeft(id);
+		Input left = getLeft(id);
 		inputValidate(id, left, WhichDiff.LEFT);
-		Input rigth = getRepositoryInstance().getRight(id);
+		Input rigth = getRight(id);
 		inputValidate(id, rigth, WhichDiff.RIGTH);
 		
 		output = new Output();
@@ -90,6 +90,14 @@ public class DiffBusiness {
         }
 		
 		return output;
+	}
+
+	public Input getRight(Integer id) {
+		return getRepositoryInstance().getRight(id);
+	}
+
+	public Input getLeft(Integer id) {
+		return getRepositoryInstance().getLeft(id);
 	}
 	
 	/**
